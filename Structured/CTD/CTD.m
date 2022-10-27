@@ -14,7 +14,7 @@ H = rand(N,r);
 
 lastErr = 0;
 
-for i=1:150
+for i=1:50
     W = tens2mat(J, 1, [2, 3]) / kr(H,V)';
 
     V = tens2mat(J, 2, [1, 3]) / kr(H,W)';
@@ -41,7 +41,7 @@ for i=1:150
     end
 
     U = {W, V, H};
-    err = frob(cpdres(J, U)) / frob(J);  
+    err = frob(cpdres(J, U)) / frob(J);
     if (err < 0.005 || abs(err-lastErr) <0.000005)
         break;
     end
@@ -49,5 +49,6 @@ for i=1:150
     lastErr = err;
 end
 
+err
 end
 

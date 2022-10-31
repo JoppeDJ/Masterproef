@@ -27,11 +27,11 @@ function [W, D2, Vt, D1, Zt] = PARATUCK2(X, r2, r1)
         
         error = frob(X - apprX)^2 / frob(X)^2;
         if(error < 0.01)
-            error
             break
         end
     
     end
+    error
 end
 
 % Optimalisatie mogelijk: element per element output berekenen i.p.v.
@@ -55,7 +55,7 @@ function [D2] = updateD2(X, W, Vt, Zt, D1, K, r2)
     D2 = zeros(K, r2);
     for k=1:K
         Fk = Zt' * diag(D1(k,:)) * Vt';
-        xk = reshape(X(:,:,k), numel(X(:,:,k)), 1);% Vectorisatie van Xk zou verkeerd kunnen zijn (niet duidelijk uit paper)
+        xk = reshape(X(:,:,k), numel(X(:,:,k)), 1);
 
         D2(k,:) = (kr(Fk, W) \ xk)'; % transpose van kathri-rao nodig (?)
     end
@@ -84,7 +84,7 @@ function [D1] = updateD1(X, W, Vt, Zt, D2, K, r1)
     D1 = zeros(K, r1);
     for k=1:K
         Fk = W * diag(D2(k,:))' * Vt;
-        xk = reshape(X(:,:,k)', numel(X(:,:,k)), 1);% Vectorisatie van Xk zou verkeerd kunnen zijn (niet duidelijk uit paper)
+        xk = reshape(X(:,:,k)', numel(X(:,:,k)), 1);
 
         D1(k,:) = (kr(Fk, Zt') \ xk)'; % transpose van kathri-rao nodig (?)
     end

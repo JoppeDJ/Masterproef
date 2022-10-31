@@ -5,6 +5,8 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_PROJ(Jac, bf1, bf2, r1, r2, s
     [I, J, K] = size(Jac);
     d1 = length(bf1);
     d2 = length(bf2);
+
+    lambd
     
     cD1 = zeros(r1*d1,1);
     cD2 = zeros(r2*d2,1);
@@ -14,25 +16,28 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_PROJ(Jac, bf1, bf2, r1, r2, s
     Vt = randn(r2, r1);
     D1 = randn(K, r1);
     Zt = randn(r1, J);
+
+    lastError = 1e5;
     
     for i=1:100
+       
+        Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
 
         D1 = updateD1(Jac, W, Vt, Zt, D2, K, r1);
         
         % Projectie strategie
-        [cD1, D1] = update_cD1(D1, Zt, samples, bf1, K, r1, d1);
-        
-        D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
+        [cD1, D1] = update_cD1(D1, Zt, samples, bf1, K, r1, d1, lambda1);
 
+        Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);        
+
+        D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
+        
         % Projectie strategie
-        [cD2, D2] = update_cD2(D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2);
+        %[cD2, D2] = update_cD2(D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2);
+
+        %Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);
         
-        Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
-        
-        Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);
-        
-        W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);        
-        
+        W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);
     
         apprJac = zeros(I, J, K);
         for j=1:K
@@ -41,10 +46,11 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_PROJ(Jac, bf1, bf2, r1, r2, s
         end
         
         error = frob(Jac - apprJac)^2 / frob(Jac)^2
-        if(error < 0.01)
+        if(error < 0.01 || abs(error-lastError) < 0.00005)
             break
         end
-    
+
+        lastError = error;
     end
     error
 end
@@ -122,7 +128,7 @@ function [Zt] = updateZt(X, W, D1, Vt, D2, I, J, K, r1)
     Zt = F \ unfoldX; % Paper gebruikt F^T (lijkt verkeerd)
 end
 
-function [cD1, D1] = update_cD1(X, D1, Zt, samples, bf1, K, r1, d1)
+function [cD1, D1] = update_cD1(D1, Zt, samples, bf1, K, r1, d1, lambda)
     % Projectiestrategie
     X = zeros(r1*K, r1*d1);
     for l=1:r1
@@ -138,15 +144,23 @@ function [cD1, D1] = update_cD1(X, D1, Zt, samples, bf1, K, r1, d1)
         X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) = Xl;
     end
 
-    cD1 = (reshape(D1, numel(D1), 1)'/ X')';
+    flag = true;
+    obj = frob(reshape(D1, numel(D1), 1) - X * cD1)^2 + lambda * frob(cD1)^2
+    while flag
+        cD1 = ...
+            pinv(X'*X + lambda * eye(r1*d1))*X'*reshape(D1, numel(D1), 1);
+        obj = 
+    end
+    %cD1 = (reshape(D1, numel(D1), 1)'/ X')';
 
     for l=1:r1
         D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
     end
 end
 
-function [cD2, D2] = update_cD2(X, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2)
+function [cD2, D2] = update_cD2(D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2)
     % Projectiestrategie
+    X = zeros(r2*K, r2*d2);
     for l=1:r2
         Xl = zeros(K, d2);
         for j=1:K

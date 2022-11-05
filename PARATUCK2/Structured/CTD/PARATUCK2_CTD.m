@@ -1,4 +1,4 @@
-function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_PROJ(Jac, bf1, bf2, r1, r2, samples)
+function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, samples)
 %PARATUCK2 Computes PARATUCK2 decomposition of given three-way tensor
 %taking into account the neural network structure.
 
@@ -45,8 +45,6 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_PROJ(Jac, bf1, bf2, r1, r2, s
         
         % Projectie strategie
         [cD2, D2] = update_cD2(cD2, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda2);
-
-        %Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);
         
         W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);
     

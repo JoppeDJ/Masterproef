@@ -1,4 +1,4 @@
-function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF(Jac, F, bf1, bf2, r1, r2, samples)
+function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2, r1, r2, samples)
 %PARATUCK2 Computes PARATUCK2 decomposition of given three-way tensor
 %taking into account the neural network structure.
 
@@ -6,8 +6,9 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF(Jac, F, bf1, bf2, r1
     d1 = length(bf1);
     d2 = length(bf2);
 
-    lambda = 0.5;
-    lambda1 = 1;
+    lambda = 1;
+    lambda1 = 0.2;
+    lambda2 = 0.2;
     
     cD1 = zeros(r1*d1,1);
     cD2 = zeros(r2*(d2+1),1);
@@ -47,7 +48,7 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF(Jac, F, bf1, bf2, r1
         D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
         
         % Projectie strategie
-        [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda);
+        [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda2, lambda);
 
         Ht = updateH(F,W);
         
@@ -59,8 +60,8 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF(Jac, F, bf1, bf2, r1
                 W * diag(D2(j,:)) * Vt * diag(D1(j,:)) * Zt;
         end
         
-        error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) ...
-            / (frob(Jac)^2 + lambda * frob(F)^2)
+        error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) / ...
+            (frob(Jac)^2 + lambda * frob(F)^2)
         if(error < 0.001 || abs(error-lastError) < 0.00005)
             break
         end
@@ -163,6 +164,7 @@ function [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1)
         X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) = Xl;
     end
 
+    I = eye(r1*d1);
     not_converged = true;
     while not_converged
         obj1 = frob(reshape(D1, numel(D1), 1) - X * cD1)^2 + lambda1 * frob(cD1)^2;
@@ -170,7 +172,7 @@ function [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1)
             not_converged = false;
         else
             cD1 = ...
-                pinv(X'*X + lambda1 * eye(r1*d1))*X'*reshape(D1, numel(D1), 1);
+                pinv(X'*X + lambda1 * I)*X'*reshape(D1, numel(D1), 1);
             for l=1:r1
                 D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
             end
@@ -179,7 +181,7 @@ function [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1)
     %cD1 = (reshape(D1, numel(D1), 1)'/ X')';
 end
 
-function [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda)
+function [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda2, lambda)
     % Projectiestrategie
     X = zeros(r2*K, r2*(d2+1));
     Y = zeros(r2*K, r2*(d2+1));
@@ -205,15 +207,22 @@ function [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, 
         Y(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) = Yl;
     end
 
+
+    I = eye(r2*(d2+1));
+    for i=1:(d2+1):(r2-1)*(d2+1) + 1
+        I(i,i) = 0;
+    end
     not_converged = true;
     while not_converged
         obj2 = frob(reshape(D2, numel(D2), 1) - X * cD2)^2 + ...
-            lambda * frob(reshape(Ht', numel(Ht), 1)- Y * cD2)^2;
-        if obj2 < 200
+            lambda * frob(reshape(Ht', numel(Ht), 1)- Y * cD2)^2 + ...
+            lambda2 * frob(cD2)^2;
+        if obj2 < 100
             not_converged = false;
         else
             cD2 =  ...
-                pinv([X; lambda * Y]) * [reshape(D2, numel(D2), 1);lambda*reshape(Ht', numel(Ht),1)];
+                pinv(X'*X+lambda*(Y'*Y)+lambda2*I) * ...
+                (X'*reshape(D2, numel(D2), 1)+lambda*Y'*reshape(Ht', numel(Ht), 1));
             for l=1:r2
                 D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1));
                 Ht(l,:) = (Y(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1)))';

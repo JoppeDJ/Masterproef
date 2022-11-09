@@ -1,23 +1,33 @@
-function [W, D2, Vt, D1, Zt] = PARATUCK2(X, r2, r1)
+function [Ws, Ds] = PARATUCK_Z(A, rList)
 %PARATUCK2 Computes PARATUCK2 decomposition of given three-way tensor
 
-    [I, J, K] = size(X);
-    
-    D2 = randn(K, r2);
-    Vt = randn(r2, r1);
-    D1 = randn(K, r1);
-    Zt = randn(r1, J);
+    [I, J, K] = size(A);
+    nbOfDiags = size(rList, 2);
+
+    Ws = cell(nbOfDiags + 1,1);
+    Ds = cell(nbOfDiags);
+    for i=1:nbOfDiags
+        if(i == nbOfDiags)
+            Ws(i+1) = randn(I, rList(i));
+        else
+            Ws(i+1) = randn(rList(i+1), rList(i));
+        end
+
+        Ds(i) = randn(rList(i), rList(i));
+        
+    end
+
     
     for i=1:100
-        W = updateW(X, D2, Vt, D1, Zt, I, J, K, r2);
+        Ws(1) = updateW0(X, D2, Vt, D1, Zt, I, J, K, r2);
     
-        D2 = updateD2(X, W, Vt, Zt, D1, K, r2);
+        %D2 = updateD2(X, W, Vt, Zt, D1, K, r2);
     
-        Vt = updateVt(X, W, D1, D2, Zt, I, J, K, r1, r2);
+        %Vt = updateVt(X, W, D1, D2, Zt, I, J, K, r1, r2);
     
-        D1 = updateD1(X, W, Vt, Zt, D2, K, r1);
+        %D1 = updateD1(X, W, Vt, Zt, D2, K, r1);
         
-        Zt = updateZt(X, W, D1, Vt, D2, I, J, K, r1);
+        Ws(end) = updateWz(X, W, D1, Vt, D2, I, J, K, r1);
 
         apprX = zeros(I, J, K);
         for j=1:K

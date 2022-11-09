@@ -61,7 +61,7 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF(Jac, F, bf1, bf2, r1
         
         error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) ...
             / (frob(Jac)^2 + lambda * frob(F)^2)
-        if(error < 0.001 || abs(error-lastError) < 0.00005)
+        if(error < 0.000001 || abs(error-lastError) < 0.00005)
             break
         end
 

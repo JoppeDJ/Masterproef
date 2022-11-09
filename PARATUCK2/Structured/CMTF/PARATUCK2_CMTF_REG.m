@@ -7,8 +7,8 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2
     d2 = length(bf2);
 
     lambda = 1;
-    lambda1 = 0.2;
-    lambda2 = 0.2;
+    lambda1 = 1;
+    lambda2 = 0.4;
     
     cD1 = zeros(r1*d1,1);
     cD2 = zeros(r2*(d2+1),1);
@@ -62,7 +62,7 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2
         
         error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) / ...
             (frob(Jac)^2 + lambda * frob(F)^2)
-        if(error < 0.001 || abs(error-lastError) < 0.00005)
+        if(error < 0.0001 || abs(error-lastError) < 0.00005)
             break
         end
 

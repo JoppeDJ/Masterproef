@@ -97,9 +97,9 @@ end
 
 disp('Training done!')
 %Saves the parameters
-save('MNIST/parameters/wfour.mat','w34');
-save('MNIST/parameters/wthree.mat','w23');
-save('MNIST/parameters/wtwo.mat','w12');
-save('MNIST/parameters/bfour.mat','b34');
-save('MNIST/parameters/bthree.mat','b23');
-save('MNIST/parameters/btwo.mat','b12');
+save('MNIST/2_layer/parameters/wfour.mat','w34');
+save('MNIST/2_layer/parameters/wthree.mat','w23');
+save('MNIST/2_layer/parameters/wtwo.mat','w12');
+save('MNIST/2_layer/parameters/bfour.mat','b34');
+save('MNIST/2_layer/parameters/bthree.mat','b23');
+save('MNIST/2_layer/parameters/btwo.mat','b12');

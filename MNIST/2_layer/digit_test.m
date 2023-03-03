@@ -10,17 +10,17 @@ images = images/255;
 
 images = images';
 
-we34 = matfile('MNIST/parameters/wfour.mat');
+we34 = matfile('MNIST/2_layer/parameters/wfour.mat');
 w4 = we34.w34;
-we23 = matfile('MNIST/parameters/wthree.mat');
+we23 = matfile('MNIST/2_layer/parameters/wthree.mat');
 w3 = we23.w23;
-we12 = matfile('MNIST/parameters/wtwo.mat');
+we12 = matfile('MNIST/2_layer/parameters/wtwo.mat');
 w2 = we12.w12;
-bi34 = matfile('MNIST/parameters/bfour.mat');
+bi34 = matfile('MNIST/2_layer/parameters/bfour.mat');
 b4 = bi34.b34;
-bi23 = matfile('MNIST/parameters/bthree.mat');
+bi23 = matfile('MNIST/2_layer/parameters/bthree.mat');
 b3 = bi23.b23;
-bi12 = matfile('MNIST/parameters/btwo.mat');
+bi12 = matfile('MNIST/2_layer/parameters/btwo.mat');
 b2 = bi12.b12;
 success = 0;
 n = 10000;

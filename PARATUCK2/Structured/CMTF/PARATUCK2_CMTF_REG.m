@@ -6,8 +6,8 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2
     d1 = length(bf1);
     d2 = length(bf2);
 
-    lambda = 1;
-    lambda1 = 1;
+    lambda = 0.4;
+    lambda1 = 0.4;
     lambda2 = 0.4;
     
     cD1 = zeros(r1*d1,1);
@@ -34,7 +34,7 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2
 
     lastError = 1e5;
     
-    for i=1:100
+    for i=1:20
        
         Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
 

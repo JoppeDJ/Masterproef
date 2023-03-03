@@ -60,9 +60,11 @@ function [W, D2, Vt, D1, Zt, Ht, cD1, cD2] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf2
                 W * diag(D2(j,:)) * Vt * diag(D1(j,:)) * Zt;
         end
         
-        error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) / ...
-            (frob(Jac)^2 + lambda * frob(F)^2)
-        if(error < 0.0001 || abs(error-lastError) < 0.00005)
+        %error = (frob(Jac - apprJac)^2 + lambda * frob(F-W*Ht)^2) / ...
+            %(frob(Jac)^2 + lambda * frob(F)^2)
+
+        error = frob(Jac - apprJac)^2 / frob(Jac)^2
+        if(error < 0.000001 || abs(error-lastError) < 0.00000005)
             break
         end
 

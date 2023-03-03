@@ -41,7 +41,7 @@ for i=1:50
     end
 
     U = {W, V, H};
-    err = frob(cpdres(J, U)) / frob(J);
+    err = frob(cpdres(J, U)) / frob(J)
     if (err < 0.005 || abs(err-lastErr) <0.000005)
         break;
     end

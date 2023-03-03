@@ -109,13 +109,19 @@ function [Vt] = updateVt(X, W, D1, D2, Zt, I, J, K, r1, r2)
         x((k-1) * I * J + 1 : k * I * J, :) = reshape(X(:,:,k), 1, numel(X(:,:,k)));
     end
 
-    Z = zeros(I*J*K, r1 * r2);
+    %Z = zeros(I*J*K, r1 * r2);
+    vt = zeros(r1*r2, 1);
     for i=1:K
-        Z((i-1) * I * J + 1 : i * I * J, :) = ...
-            kron(Zt'*diag(D1(i,:)), W*diag(D2(i,:)));
+        %Z((i-1) * I * J + 1 : i * I * J, :) = ...
+            %kron(Zt'*diag(D1(i,:)), W*diag(D2(i,:)));
+        vt = vt + ...
+            (kron(Zt'*diag(D1(i,:)), W*diag(D2(i,:))) \ ...
+            x((i-1) * I * J + 1 : i * I * J));
     end
 
-    vt = Z \ x; 
+    vt = vt ./ K;
+
+    %vt = Z \ x; 
 
     Vt = reshape(vt, r2, r1); % Afhankelijk van hoe reshape gebeurd kan dit fout zijn
 end
@@ -163,20 +169,20 @@ function [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1)
         X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) = Xl;
     end
 
-    not_converged = true;
-    while not_converged
-        obj1 = frob(reshape(D1, numel(D1), 1) - X * cD1)^2 + lambda1 * frob(cD1)^2;
-        if obj1 < 100
-            not_converged = false;
-        else
-            cD1 = ...
-                pinv(X'*X + lambda1 * eye(r1*d1))*X'*reshape(D1, numel(D1), 1);
-            for l=1:r1
-                D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
-            end
-        end
-    end
-    %cD1 = (reshape(D1, numel(D1), 1)'/ X')';
+%     not_converged = true;
+%     while not_converged
+%         obj1 = frob(reshape(D1, numel(D1), 1) - X * cD1)^2 + lambda1 * frob(cD1)^2;
+%         if obj1 < 100
+%             not_converged = false;
+%         else
+%             cD1 = ...
+%                 pinv(X'*X + lambda1 * eye(r1*d1))*X'*reshape(D1, numel(D1), 1);
+%             for l=1:r1
+%                 D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
+%             end
+%         end
+%     end
+    cD1 = (reshape(D1, numel(D1), 1)'/ X')';
 end
 
 function [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda)
@@ -205,23 +211,23 @@ function [cD2, D2] = update_cD2(cD2, Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, K, 
         Y(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) = Yl;
     end
 
-    not_converged = true;
-    while not_converged
-        obj2 = frob(reshape(D2, numel(D2), 1) - X * cD2)^2 + ...
-            lambda * frob(reshape(Ht', numel(Ht), 1)- Y * cD2)^2;
-        if obj2 < 200
-            not_converged = false;
-        else
-            cD2 =  ...
-                pinv([X; lambda * Y]) * [reshape(D2, numel(D2), 1);lambda*reshape(Ht', numel(Ht),1)];
-            for l=1:r2
-                D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1));
-                Ht(l,:) = (Y(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1)))';
-            end
-        end
-    end
+%     not_converged = true;
+%     while not_converged
+%         obj2 = frob(reshape(D2, numel(D2), 1) - X * cD2)^2 + ...
+%             lambda * frob(reshape(Ht', numel(Ht), 1)- Y * cD2)^2;
+%         if obj2 < 200
+%             not_converged = false;
+%         else
+%             cD2 =  ...
+%                 pinv([X; lambda * Y]) * [reshape(D2, numel(D2), 1);lambda*reshape(Ht', numel(Ht),1)];
+%             for l=1:r2
+%                 D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1));
+%                 Ht(l,:) = (Y(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1)))';
+%             end
+%         end
+%     end
 
-    %cD2 = (reshape(D2, numel(D2), 1)'/ X')';
+    cD2 = (reshape(D2, numel(D2), 1)'/ X')';
 end
 
 function [result] = applyFlexibleFunctions(inputVec, c, bf)

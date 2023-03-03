@@ -6,8 +6,8 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, sa
     d1 = length(bf1);
     d2 = length(bf2);
 
-    lambda1 = 1;
-    lambda2 = 1;
+    lambda1 = 0.2;
+    lambda2 = 0.2;
     
     cD1 = zeros(r1*d1,1);
     cD2 = zeros(r2*d2,1);
@@ -29,8 +29,8 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, sa
     W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);
 
     lastError = 1e5;
-    
-    for i=1:100
+    iterations = 0;
+    for i=1:10000
        
         Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
 
@@ -55,11 +55,15 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, sa
         end
         
         error = frob(Jac - apprJac)^2 / frob(Jac)^2
-        if(error < 0.001 || abs(error-lastError) < 0.00005)
+        %if(mod(iterations, 20) == 0)
+        %    error
+        %end
+        if(error < 0.0001 || abs(error-lastError) < 0.00005)
             break
         end
 
         lastError = error;
+        iterations = iterations + 1;
     end
     error
 end

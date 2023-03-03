@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addOn>
+  <identifier>63053fe5-602c-43dd-9fb6-df51d0b73dbe</identifier>
+  <displayType>Collection</displayType>
+  <translatedDisplayType>
+    <en_US>Collection</en_US>
+    <es_ES>Collection</es_ES>
+    <es_MX>Collection</es_MX>
+    <ja_JP>コレクション</ja_JP>
+    <ko_KR>컬렉션</ko_KR>
+    <zh_CN>集合</zh_CN>
+  </translatedDisplayType>
+  <name>MNIST neural network training and testing</name>
+  <author>Johannes Langelaar</author>
+  <version>1.0.0</version>
+  <downloadUrl>https://www.mathworks.com/matlabcentral/mlc-downloads/downloads/63053fe5-602c-43dd-9fb6-df51d0b73dbe/8e8c83c7-cbd7-4698-b069-211c2dfcb25b/packages/zip?src=addons_ml_desktop_install&amp;profile_id=17507729&amp;license=919019&amp;release_family=R2021b</downloadUrl>
+  <licenseUrl>https://addons.mathworks.com/registry/v1/63053fe5-602c-43dd-9fb6-df51d0b73dbe/1.0.0.0/-/license</licenseUrl>
+  <previewImageUrl>https://www.mathworks.com/responsive_image/160/120/0/0/0/cache/matlabcentral/mlc-downloads/downloads/63053fe5-602c-43dd-9fb6-df51d0b73dbe/8e8c83c7-cbd7-4698-b069-211c2dfcb25b/images/screenshot.png</previewImageUrl>
+  <releaseNotesUrl>https://www.mathworks.com/add-ons/63053fe5-602c-43dd-9fb6-df51d0b73dbe/8e8c83c7-cbd7-4698-b069-211c2dfcb25b/releaseNotes</releaseNotesUrl>
+  <installationFolder>Collections</installationFolder>
+</addOn>

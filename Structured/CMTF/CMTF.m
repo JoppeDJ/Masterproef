@@ -1,10 +1,12 @@
-function [W, V, H, Z, c] = CMTF(J, F, bf, r, fit_param, samples)
+function [Wres, Vres, Hres, Zres, Cres] = CMTF(J, F, bf, bfd, r, samples)
 %CTD Constrained tensor based approach
 %   Constrained tensor based approach for learning flexbile activation
 %   functions.
 
 [~, m, N] = size(J);
 d = length(bf);
+
+fit_param = 0.01;
 
 X = zeros(r*N, r*d);
 c = zeros(r*(d+1),1);
@@ -15,7 +17,8 @@ Z = rand(N,r);
 
 lastErr = 0;
 
-for i=1:150
+minError = 1;
+for i=1:50
     %W = (tens2mat(J, 1, [2, 3]) * kr(H,V) + fit_param^2 * F * Z) / ...
     %((H'*H) .* (V'*V) + fit_param^2 * (Z'*Z));
     
@@ -35,7 +38,13 @@ for i=1:150
             xl = dlarray(V(:,l)' * samples(:,j));
         
             for k=2:d+1
-                [fval, grad] = dlfeval(bf{k-1},xl);
+                funcf = bf{k-1};
+                funcd = bfd{k-1};
+
+                fval = funcf(xl);
+                grad = funcd(xl);
+
+                %[fval, grad] = dlfeval(bf{k-1},xl);
                 Xl(j,k) = grad;
                 Yl(j,k) = fval;
             end
@@ -57,9 +66,26 @@ for i=1:150
     end
 
     U = {W, V, H};
-    err = frob(cpdres(J, U)) / frob(J);   
+    err = frob(cpdres(J, U))^2 / frob(J)^2;
+    
+    i
+    JacError = err
+    Ferror = frob(F - W*Z')^2 / frob(F)^2
+    if(Ferror < minError)
+        Wres = W;
+        Vres = V;
+        Hres = H;
+        Zres = Z;
+        Cres = c;
+
+        minError = Ferror;
+    end
     if (err < 0.005 || abs(err-lastErr) <0.00005)
         break;
+    end
+
+    if(mod(i,5) == 0 && fit_param < 1)
+        fit_param = fit_param * 3;
     end
 
     lastErr = err;

@@ -1,12 +1,17 @@
+
+% Classical MNIST
 data = load('mnist_train.csv');
 
+% MNIST-1D
+%data = load('mnist1d_train.csv');
+
 labels = data(:,1);
-y = zeros(10,60000); %Correct outputs vector
-for i = 1:60000
+y = zeros(10,size(data,1)); %Correct outputs vector
+for i = 1:size(data,1)
     y(labels(i)+1,i) = 1;
 end
 
-images = data(:,2:785);
+images = data(:,2:size(data,2));
 images = images/255;
 
 images = images'; %Input vectors
@@ -16,7 +21,7 @@ hn2 = 60; %Number of neurons in the second hidden layer
 hn3 = 40; %Number of neurons in the second hidden layer
 
 %Initializing weights and biases
-w12 = randn(hn1,784)*sqrt(2/784);
+w12 = randn(hn1,size(data,2) - 1)*sqrt(2/(size(data,2) - 1));
 w23 = randn(hn2,hn1)*sqrt(2/hn1);
 w34 = randn(hn3,hn2)*sqrt(2/hn2);
 w45 = randn(10,hn3)*sqrt(2/hn3);
@@ -51,7 +56,7 @@ for k = 1:epochs %Outer epoch loop
     
     batches = 1;
     
-    for j = 1:60000/m
+    for j = 1:size(data,1)/m
         error5 = zeros(10,1);
         error4 = zeros(hn3,1);
         error3 = zeros(hn2,1);
@@ -116,6 +121,16 @@ end
 
 disp('Training done!')
 %Saves the parameters
+% save('MNIST/3_layer/final_parameters/wfive.mat','w45');
+% save('MNIST/3_layer/final_parameters/wfour.mat','w34');
+% save('MNIST/3_layer/final_parameters/wthree.mat','w23');
+% save('MNIST/3_layer/final_parameters/wtwo.mat','w12');
+% 
+% save('MNIST/3_layer/final_parameters/bfive.mat','b45');
+% save('MNIST/3_layer/final_parameters/bfour.mat','b34');
+% save('MNIST/3_layer/final_parameters/bthree.mat','b23');
+% save('MNIST/3_layer/final_parameters/btwo.mat','b12');
+
 save('MNIST/3_layer/parameters/wfive.mat','w45');
 save('MNIST/3_layer/parameters/wfour.mat','w34');
 save('MNIST/3_layer/parameters/wthree.mat','w23');

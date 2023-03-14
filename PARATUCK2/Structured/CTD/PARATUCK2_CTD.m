@@ -1,13 +1,13 @@
-function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, samples)
+function [Wres, D2res, Vtres, D1res, Ztres, cD1res, cD2res] = PARATUCK2_CTD(Jac, bf1, bf1d, bf2d, r1, r2, samples)
 %PARATUCK2 Computes PARATUCK2 decomposition of given three-way tensor
 %taking into account the neural network structure.
 
     [I, J, K] = size(Jac);
-    d1 = length(bf1);
-    d2 = length(bf2);
+    d1 = length(bf1d);
+    d2 = length(bf2d);
 
-    lambda1 = 0.2;
-    lambda2 = 0.2;
+    lambda1 = 0.0;
+    lambda2 = 0.0;
     
     cD1 = zeros(r1*d1,1);
     cD2 = zeros(r2*d2,1);
@@ -29,22 +29,24 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, sa
     W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);
 
     lastError = 1e5;
+    minError = 1;
+
     iterations = 0;
-    for i=1:10000
+    for i=1:50
        
         Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
 
         D1 = updateD1(Jac, W, Vt, Zt, D2, K, r1);
         
         % Projectie strategie
-        [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1);
+        [cD1, D1] = update_cD1(D1, Zt, samples, bf1d, K, r1, d1, lambda1);
 
         Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);        
 
         D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
         
         % Projectie strategie
-        [cD2, D2] = update_cD2(cD2, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda2);
+        [cD2, D2] = update_cD2(D2, Vt, Zt, samples, cD1, bf1, bf2d, K, r2, d2, lambda2);
         
         W = updateW(Jac, D2, Vt, D1, Zt, I, J, K, r2);
     
@@ -54,18 +56,29 @@ function [W, D2, Vt, D1, Zt, cD1, cD2] = PARATUCK2_CTD(Jac, bf1, bf2, r1, r2, sa
                 W * diag(D2(j,:)) * Vt * diag(D1(j,:)) * Zt;
         end
         
-        error = frob(Jac - apprJac)^2 / frob(Jac)^2
-        %if(mod(iterations, 20) == 0)
-        %    error
-        %end
-        if(error < 0.0001 || abs(error-lastError) < 0.00005)
-            break
+        i
+        Jerror = frob(Jac - apprJac)^2 / frob(Jac)^2
+
+        if(Jerror < minError)
+            Wres = W;
+            D2res = D2;
+            Vtres = Vt;
+            D1res = D1; 
+            Ztres = Zt;
+            cD1res = cD1; 
+            cD2res = cD2;
+
+            minError = Jerror;
         end
 
-        lastError = error;
+%         if(Jerror < 0.0001 || abs(Jerror-lastError) < 0.000005)
+%             break
+%         end
+
+        lastError = Jerror;
         iterations = iterations + 1;
     end
-    error
+    minError
 end
 
 % Optimalisatie mogelijk: element per element output berekenen i.p.v.
@@ -141,39 +154,44 @@ function [Zt] = updateZt(X, W, D1, Vt, D2, I, J, K, r1)
     Zt = F \ unfoldX; % Paper gebruikt F^T (lijkt verkeerd)
 end
 
-function [cD1, D1] = update_cD1(cD1, D1, Zt, samples, bf1, K, r1, d1, lambda1)
+function [cD1, D1] = update_cD1(D1, Zt, samples, bf1d, K, r1, d1, lambda1)
     % Projectiestrategie
-    X = zeros(r1*K, r1*d1);
+    %X = sparse(r1*K, r1*d1);
+    rowList = zeros(d1*K*r1,1);
+    colList = zeros(d1*K*r1,1);
+    valList = zeros(d1*K*r1,1);
+    currentIdx = 1;
     for l=1:r1
-        Xl = zeros(K, d1);
+        %Xl = zeros(K, d1);
         for j=1:K
-            xl = dlarray(Zt(l,:) * samples(:,j));
+            xl = Zt(l,:) * samples(:,j);
 
             for k=1:d1
-                [~, grad] = dlfeval(bf1{k},xl);
-                Xl(j,k) = grad;
-            end
-        end
-        X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) = Xl;
-    end
+                func = bf1d{k};
+                grad = func(xl);
 
-    not_converged = true;
-    while not_converged
-        obj1 = frob(reshape(D1, numel(D1), 1) - X * cD1)^2 + lambda1 * frob(cD1)^2;
-        if obj1 < 100
-            not_converged = false;
-        else
-            cD1 = ...
-                pinv(X'*X + lambda1 * eye(r1*d1))*X'*reshape(D1, numel(D1), 1);
-            for l=1:r1
-                D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
+                rowList(currentIdx) = ((l-1)*K) + j;
+                colList(currentIdx) = ((l-1)*d1) + k;
+                valList(currentIdx) = grad;
+
+                currentIdx = currentIdx + 1;
             end
         end
+
+        %X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) = Xl;
     end
-    %cD1 = (reshape(D1, numel(D1), 1)'/ X')';
+    
+    X = sparse(rowList, colList, valList);
+
+    s2 = size(X, 2);
+    cD1 = [X; lambda1 * eye(s2)] \ [reshape(D1, numel(D1), 1); zeros(s2, 1)];
+    
+    for l=1:r1
+        D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
+    end
 end
 
-function [cD2, D2] = update_cD2(cD2, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, d2, lambda2)
+function [cD2, D2] = update_cD2(D2, Vt, Zt, samples, cD1, bf1, bf2d, K, r2, d2, lambda2)
     % Projectiestrategie
     X = zeros(r2*K, r2*d2);
     for l=1:r2
@@ -182,31 +200,22 @@ function [cD2, D2] = update_cD2(cD2, D2, Vt, Zt, samples, cD1, bf1, bf2, K, r2, 
             inner_sample = Zt * samples(:,j);
             sample = applyFlexibleFunctions(inner_sample, cD1, bf1);
 
-            xl = dlarray(Vt(l,:) * sample);
+            xl = Vt(l,:) * sample;
 
             for k=1:d2
-                [~, grad] = dlfeval(bf2{k},xl);
+                func = bf2d{k};
+                grad = func(xl);
                 Xl(j,k) = grad;
             end
         end
         X(((l-1)*K) + 1:l * K, ((l-1)*d2) + 1:l * d2) = Xl;
     end
-
-    not_converged = true;
-    while not_converged
-        obj2 = frob(reshape(D2, numel(D2), 1) - X * cD2)^2 + lambda2 * frob(cD2)^2;
-        if obj2 < 200
-            not_converged = false;
-        else
-            cD2 = ...
-                pinv(X'*X + lambda2 * eye(r2*d2))*X'*reshape(D2, numel(D2), 1);
-            for l=1:r2
-                D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d2) + 1:l * d2) * cD2((l-1) * d2 + 1: l * d2);
-            end
-        end
+    
+    s2 = size(X, 2);
+    cD2 = [X; lambda2 * eye(s2)] \ [reshape(D2, numel(D2), 1); zeros(s2, 1)];
+    for l=1:r2
+        D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d2) + 1:l * d2) * cD2((l-1) * d2 + 1: l * d2);
     end
-
-    %cD2 = (reshape(D2, numel(D2), 1)'/ X')';
 end
 
 function [result] = applyFlexibleFunctions(inputVec, c, bf)
@@ -217,8 +226,9 @@ function [result] = applyFlexibleFunctions(inputVec, c, bf)
     for i=1:n
         val = 0;
         for j=1:d
-            x = dlarray(inputVec(i));
-            [f, ~] = dlfeval(bf{j}, x);
+            x = inputVec(i);
+            func = bf{j};
+            f = func(x);
 
             val = val + c((i-1)*d + j) * f;
         end

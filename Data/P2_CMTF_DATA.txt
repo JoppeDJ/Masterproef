@@ -1,0 +1,57 @@
+50 iterations d = 5 for both layers, K = 360:
+
+- 20 - 20: 95.21% J error 0.4656, F error 0.2202  (!)
+- 20 - 17: 95.32% J error 0.4566, F error 0.2349  (!)
+- 20 - 15: 95.12% J error 0.4577, F error 0.2331  (!)
+- 20 - 13: 94.84% J error 0.4464, F error 0.3391
+- 20 - 10: 94.90% J error 0.4305, F error 0.3147
+- 20 - 08: 87.31% J error 0.4609, F error 0.3942
+- 20 - 05: 74.38% J error 0.5443, F error 0.5653
+
+- 17 - 20: 94.70% J error 0.4376, F error 0.2981
+- 17 - 17: 94.32% J error 0.4463, F error 0.3158
+- 17 - 15: 93.10% J error 0.4571, F error 0.3463
+- 17 - 13: 94.59% J error 0.4476, F error 0.3460
+- 17 - 10: 93.92% J error 0.4703, F error 0.3692
+- 17 - 08: 87.54% J error 0.4783, F error 0.4110
+- 17 - 05: 76.98% J error 0.5547, F error 0.5812
+
+- 15 - 20: % J error , F error
+- 15 - 17: % J error , F error
+- 15 - 15: % J error , F error
+- 15 - 13: % J error , F error
+- 15 - 10: % J error , F error
+- 15 - 08: % J error , F error
+- 15 - 05: % J error , F error
+
+- 13 - 20: % J error , F error
+- 13 - 17: % J error , F error
+- 13 - 15: % J error , F error
+- 13 - 13: % J error , F error
+- 13 - 10: % J error , F error
+- 13 - 08: % J error , F error
+- 13 - 05: % J error , F error
+
+- 10 - 20: 92.32% J error 0.4794, F error 0.3738
+- 10 - 17: 91.68% J error 0.4860, F error 0.3886
+- 10 - 15: 91.37% J error 0.4923, F error 0.4079
+- 10 - 13: 92.01% J error 0.5042, F error 0.4030
+- 10 - 10: 90.79% J error 0.5057, F error 0.4501
+- 10 - 08: 85.49% J error 0.5226, F error 0.4518
+- 10 - 05: 67.50% J error 0.5996, F error 0.6313
+
+- 08 - 20: 86.29% J error 0.5224, F error 0.4374
+- 08 - 17: 86.30% J error 0.5308, F error 0.4477
+- 08 - 15: 86.39% J error 0.5381, F error 0.4533
+- 08 - 13: 85.39% J error 0.5320, F error 0.4522
+- 08 - 10: 81.03% J error 0.5438, F error 0.4740
+- 08 - 08: 81.83% J error 0.5599, F error 0.4794
+- 08 - 05: 70.51% J error 0.6052, F error 0.6562
+
+- 05 - 20: 71.13% J error 0.6098, F error 0.5926
+- 05 - 17: 70.48% J error 0.6150, F error 0.5878
+- 05 - 15: 68.16% J error 0.6144, F error 0.6057
+- 05 - 13: 66.85% J error 0.6193, F error 0.6105
+- 05 - 10: 65.73% J error 0.6227, F error 0.6300
+- 05 - 08: 66.66% J error 0.6253, F error 0.6483
+- 05 - 05: 64.80% J error 0.6428, F error 0.6759

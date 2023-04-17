@@ -6,7 +6,7 @@ function [Wres, Vres, Hres, Zres, Cres] = CMTF(J, F, bf, bfd, r, samples)
 [~, m, N] = size(J);
 d = length(bf);
 
-fit_param = 0.01;
+fit_param = 0.001;
 
 X = zeros(r*N, r*d);
 c = zeros(r*(d+1),1);
@@ -80,18 +80,22 @@ for i=1:50
 
         minError = Ferror;
     end
-    if (err < 0.005 || abs(err-lastErr) <0.00005)
-        break;
-    end
+    %if (err < 0.005 || abs(err-lastErr) <0.00005)
+    %    break;
+    %end
 
     if(mod(i,5) == 0 && fit_param < 1)
+        %if(fit_param * 3 < 1)
         fit_param = fit_param * 3;
+        %else
+        %    fit_param = 1;
+        %end
     end
 
     lastErr = err;
 end
 
-err
+minError
 end
 
 

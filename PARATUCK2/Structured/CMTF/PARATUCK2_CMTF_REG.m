@@ -18,7 +18,7 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
     D2 = randn(K, r2);
     Vt = randn(r2, r1);
     D1 = randn(K, r1);
- 
+
     Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
  
     D1 = updateD1(Jac, W, Vt, Zt, D2, K, r1);
@@ -52,10 +52,9 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
         % Projectie strategie
         [cD2, D2, Ht] = update_cD2(Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, bf2d, K, r2, d2, lambda2, lambda);
         
-        %Ht = updateH(F,W);
-        
         W = updateW(Jac, F, Ht, D2, Vt, D1, Zt, I, J, K, r2, lambda);
-    
+        
+
         apprJac = zeros(I, J, K);
         for j=1:K
             apprJac(:,:,j) = ...
@@ -85,7 +84,7 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
             break
         end
         
-         if(mod(i,5) == 0 && lambda < 1)
+         if(mod(i,10) == 0 && lambda < 1)
              if(lambda * 3 < 1)
                 lambda = lambda * 3;
              else
@@ -105,10 +104,10 @@ end
 % Optimalisatie mogelijk: element per element output berekenen i.p.v.
 % in 1 keer zoals nu gebeurd.
 function [W] = updateW(X, F, Ht, D2, Vt, D1, Zt, I, J, K, r2, lambda)
-    unfoldX = zeros(I, J*K);
-    for i=1:K
-        unfoldX(:, (i-1) * J + 1 : i * J) = X(:,:,i);
-    end
+    %unfoldX = zeros(I, J*K);
+    %for i=1:K
+    %    unfoldX(:, (i-1) * J + 1 : i * J) = X(:,:,i);
+    %end
 
     Fw = zeros(r2, J*K);
     for i=1:K
@@ -116,7 +115,8 @@ function [W] = updateW(X, F, Ht, D2, Vt, D1, Zt, I, J, K, r2, lambda)
             diag(D2(i,:)) * Vt * diag(D1(i,:)) * Zt;
     end
 
-    W = [unfoldX lambda*F] / [Fw lambda*Ht]; % Paper gebruikt F^T (lijkt verkeerd)
+    %W = [unfoldX lambda*F] / [Fw lambda*Ht]; % Paper gebruikt F^T (lijkt verkeerd)
+    W = [tens2mat(X,1,[2 3]) lambda*F] / [Fw lambda*Ht];
 end
 
 function [D2] = updateD2(X, W, Vt, Zt, D1, K, r2)
@@ -130,20 +130,74 @@ function [D2] = updateD2(X, W, Vt, Zt, D1, K, r2)
 end
 
 function [Vt] = updateVt(X, W, D1, D2, Zt, I, J, K, r1, r2)
-    x = zeros(I*J*K, 1);
-    for k=1:K
-        x((k-1) * I * J + 1 : k * I * J, :) = reshape(X(:,:,k), 1, numel(X(:,:,k)));
-    end
+%     Z = zeros(I*J*K, r1 * r2);
+%     for i=1:K
+%        Z((i-1) * I * J + 1 : i * I * J, :) = ...
+%            kron(Zt'*diag(D1(i,:)), W*diag(D2(i,:)));
+%     end
+% 
+%     vt = Z \ tens2vec(X,1:3); 
+% 
+%     Vt = reshape(vt, r2, r1);
+% 
+    
+    rowList = zeros(K*r1*I*r2,1);
+    colList = zeros(K*r1*I*r2,1);
+    valList = zeros(K*r1*I*r2,1);
 
-    Z = zeros(I*J*K, r1 * r2);
+    currentIdx = 1;
+
+    %Z = zeros(K * r1 * I, r1 * r2);
+
+    Jtest = zeros(K * r1 * I, 1);
     for i=1:K
-        Z((i-1) * I * J + 1 : i * I * J, :) = ...
-            kron(Zt'*diag(D1(i,:)), W*diag(D2(i,:)));
-    end
 
-    vt = Z \ x; 
+        C = W*diag(D2(i,:));
+
+        for j=1:r1
+            for k=1:I
+                for l=1:r2
+                    rowList(currentIdx) = (i-1) * r1* I + (j-1) * I + k;
+                    colList(currentIdx) = (j-1) * r2 + l;
+                    valList(currentIdx) = D1(i,j) * C(k,l);
+
+                    currentIdx = currentIdx + 1;
+                end
+            end
+        end
+
+        %Z((i-1) * r1 * I + 1 : i * r1 * I, :) = ...
+        % kron(diag(D1(i,:)), W*diag(D2(i,:)));
+
+        temp = X(:,:,i) * pinv(Zt);
+        Jtest((i-1)*r1*I + 1 : i *r1*I ,:) = ...
+            reshape(temp, [], 1);
+    end
+    
+    Z = sparse(rowList, colList, valList);
+
+    vt = Z \ Jtest; 
 
     Vt = reshape(vt, r2, r1);
+
+%     A = zeros(K * I * r1, r1 * r2);
+% 
+%     Jtest = zeros(K * I * r1, 1);
+%     Ir1 = eye(r1);
+%     for i=1:K
+%         D = diag(D1(i,:)) * Zt;
+% 
+%         A((i-1)*I*r1 + 1 : i * I*r1, :) = ...
+%             kron(D * pinv(D), W * diag(D2(i,:)));
+%        
+%         temp = X(:,:,i) * pinv(D);
+%         Jtest((i-1)*I*r1 + 1 : i * I*r1 ,:) = ...
+%             reshape(temp, [], 1);
+%     end
+%     
+%     
+%     vt = A \ Jtest;
+%     Vt = reshape(vt, r2, r1);
 end
 
 function [D1] = updateD1(X, W, Vt, Zt, D2, K, r1)
@@ -157,10 +211,6 @@ function [D1] = updateD1(X, W, Vt, Zt, D2, K, r1)
 end
 
 function [Zt] = updateZt(X, W, D1, Vt, D2, I, J, K, r1)
-    unfoldX = zeros(I*K, J);
-    for i=1:K
-        unfoldX((i-1) * I + 1 : i * I,:) = X(:,:,i);
-    end
 
     F = zeros(I * K, r1);
     for i=1:K
@@ -168,7 +218,8 @@ function [Zt] = updateZt(X, W, D1, Vt, D2, I, J, K, r1)
             W*diag(D2(i,:))*Vt*diag(D1(i,:));
     end
 
-    Zt = F \ unfoldX; % Paper gebruikt F^T (lijkt verkeerd)
+    %Zt = F \ unfoldX; % Paper gebruikt F^T (lijkt verkeerd)
+    Zt = F \ tens2mat(X, [1 3], 2);
 end
 
 function [cD1, D1] = update_cD1(D1, Zt, samples, bf1d, K, r1, d1, lambda1)
@@ -195,10 +246,8 @@ function [cD1, D1] = update_cD1(D1, Zt, samples, bf1d, K, r1, d1, lambda1)
     end
     
     X = sparse(rowList, colList, valList);
-    
-    s2 = r1*d1;
-    I = speye(s2);
-    cD1 = [X; lambda1 * I] \ [reshape(D1, numel(D1), 1); sparse(s2, 1)];
+
+    cD1 = X \ reshape(D1, numel(D1), 1);
 
     for l=1:r1
         D1(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*d1) + 1:l * d1) * cD1((l-1) * d1 + 1: l * d1);
@@ -254,16 +303,9 @@ function [cD2, D2, Ht] = update_cD2(Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, bf2d
     
     X = sparse(rowListX, colListX, valListX);
     Y = sparse(rowListY, colListY, valListY);
-    
-    s2 = r2*(d2+1);
-    valListEye = ones(1,s2);
-    % No regularization on constant terms
-    for i=1:(d2+1):(r2-1)*(d2+1) + 1
-        valListEye(i) = 0;
-    end
-    I = sparse(1:s2,1:s2,valListEye);
-    cD2 = [X; lambda * Y ; lambda2 * I] \ ...
-        [reshape(D2, numel(D2), 1); lambda * reshape(Ht', numel(Ht), 1); sparse(s2,1)];
+
+    cD2 = [X; lambda * Y] \ ...
+        [reshape(D2, numel(D2), 1); lambda * reshape(Ht', numel(Ht), 1)];
 
     for l=1:r2
         D2(:,l) = X(((l-1)*K) + 1:l * K, ((l-1)*(d2+1)) + 1:l * (d2+1)) * cD2((l-1) * (d2+1) + 1: l * (d2+1));

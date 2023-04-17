@@ -1,5 +1,6 @@
 % Classical MNIST
 test = load('mnist_test.csv');
+%test = load('mnist_train.csv');
 
 % MNIST-1D
 %test = load('mnist1d_test.csv');

@@ -1,10 +1,10 @@
 50 iterations d = 5 for both layers, K = 360:
 
-- 20 - 20: 94.25% J error 0.4074
+- 20 - 20: 94.74% J error 0.3838 (accuracy on training data 95.835%) 
 - 20 - 17: 93.68% J error 0.4152
 - 20 - 15: 93.48% J error 0.4119
 - 20 - 13: 94.17% J error 0.4244
-- 20 - 10: 94.46% J error 0.42 (?)
+- 20 - 10: 94.46% J error 0.43 (?)
 - 20 - 08: 85.42% J error 0.4530
 - 20 - 05: 77.34% J error 0.5421
 
@@ -24,13 +24,13 @@
 - 15 - 08: 84.89% J error 0.4792
 - 15 - 05: 73.12% J error 0.5540
 
-- 13 - 20: % J error , F error
-- 13 - 17: % J error , F error
-- 13 - 15: % J error , F error
-- 13 - 13: % J error , F error
-- 13 - 10: % J error , F error
-- 13 - 08: % J error , F error
-- 13 - 05: % J error , F error
+- 13 - 20: % J error 
+- 13 - 17: % J error 
+- 13 - 15: % J error 
+- 13 - 13: % J error 
+- 13 - 10: % J error 
+- 13 - 08: % J error 
+- 13 - 05: 71.76% J error 0.5717
 
 - 10 - 20: 91.44% J error 0.4759
 - 10 - 17: 90.59% J error 0.4853

@@ -1,0 +1,11 @@
+50 iterations d = 5 for both layers, K = 360:
+
+- 22: 93.60% J error 0.4526, F error 0.3931 # Divergence in algorithm due to rank deficiency
+- 20: 94.16% J error 0.4602, F error 0.4070 # Divergence in algorithm due to rank deficiency
+- 18: 92.22% J error 0.4795, F error 0.4444 # Divergence in algorithm due to rank deficiency
+- 16: 91.06% J error 0.4937, F error 0.4660 # Divergence in algorithm due to rank deficiency
+- 14: 89.00% J error 0.7825, F error 0.4607 # Divergence in algorithm due to rank deficiency
+- 12: 87.64% J error 0.8024, F error 0.4422 # Divergence in algorithm due to rank deficiency
+- 10: 87.47% J error 0.6273, F error 0.3868
+- 08: 77.43% J error 0.7347, F error 0.4508
+- 06: 65.94% J error 0.8320, F error 0.5797

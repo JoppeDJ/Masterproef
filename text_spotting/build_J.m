@@ -1,6 +1,6 @@
 % Builds jacobian tensor for splitted network.
 
-%clear all
+clear all
 addpath(genpath('./'));
 
 dset = {};
@@ -61,51 +61,100 @@ end
 
 size(inputs)
 
-%% Rebuild second network as fully connected neural network
+%% Compute Jacobian tensor and zeroth-order information matrix
 
-load('eccv2014_textspotting/models/cov_second_part.mat');
+tic
+[F, Jac] = compute_Jac_and_F(inputs);
+toc
 
-% Hidden layer 1
-W8 = squeeze(layer8.weights);
-b8 = layer8.biases;
+%% Functions
 
-W9 = squeeze(layer9.weights);
-b9 = layer9.biases;
+function [F, Jac] = compute_Jac_and_F(inputs)
+    [nb_inputs, nb_samples] = size(inputs);
+    nb_outputs = 36;
 
-W10 = squeeze(layer10.weights);
-b10 = layer10.biases;
-
-W11 = squeeze(layer11.weights);
-b11 = layer11.biases;
-
-% Hidden layer 2
-W13 = squeeze(layer13.weights);
-b13 = layer13.biases;
-
-W14 = squeeze(layer14.weights);
-b14 = layer14.biases;
-
-W15 = squeeze(layer15.weights);
-b15 = layer15.biases;
-
-W16 = squeeze(layer16.weights);
-b16 = layer16.biases;
-
-%% Try to get gradient of second part of network
-
-nn2 = cudaconvnet_to_mconvnet(model{2});
-
-[ftest, gtest] = test_part_2(nn2, dlarray(reshape(inputs(:,1), 8,8,64)));
-
-function [f, grad] = test_part_2(net, data)
-    net = net.forward(net, struct('data', single(data)));
-
-    f = squeeze(net.Xout(:,:,2:37,:));
-    
-    outputs = 36;
-    grad = zeros(outputs, 4096);
-    for i=1:outputs
-        grad(i, :) = dlgradient(f(i), data);
+    F = zeros(nb_outputs, nb_samples);
+    Jac = zeros(nb_outputs, nb_inputs, nb_samples);
+    for i=1:nb_samples
+        [F(:,i), Jac(:,:,i)] = dlfeval(@network, dlarray(inputs(:,i)));
     end
+end
+
+function [f, grad] = network(input)
+    load('eccv2014_textspotting/models/cov_second_part.mat');
+    
+    % Parameters of first hidden layer
+    W8 = get_weights(layer8);
+    b8 = layer8.biases;
+    
+    W9 = get_weights(layer9);
+    b9 = layer9.biases;
+    
+    W10 = get_weights(layer10);
+    b10 = layer10.biases;
+    
+    W11 = get_weights(layer11);
+    b11 = layer11.biases;
+    
+    % Parameters of second hidden layer
+    W13 = get_weights(layer13);
+    b13 = layer13.biases;
+    
+    W14 = get_weights(layer14);
+    b14 = layer14.biases;
+    
+    W15 = get_weights(layer15);
+    b15 = layer15.biases;
+    
+    W16 = get_weights(layer16);
+    b16 = layer16.biases;
+
+    d = input;
+    
+    % Hidden layer 1
+    vecs = cat(3, ...
+        single(W8.' * d + b8), ...
+        single(W9.' * d + b9), ...
+        single(W10.' * d + b10), ...
+        single(W11.' * d + b11));
+    
+    % Maxout
+    x1 = max(vecs, [], 3);
+    
+    % Hidden layer 2
+    vecs = cat(3, ...
+        single(W13.' * x1 + b13), ...
+        single(W14.' * x1 + b14), ...
+        single(W15.' * x1 + b15), ...
+        single(W16.' * x1 + b16));
+    
+    % Final maxout
+    f = max(vecs(2:37,:,:), [], 3);
+
+    outputs = 36;
+    grad = zeros(outputs, size(input,1));
+
+    for i = 1:outputs
+        grad(i,:) = dlgradient(f(i), d);
+    end
+end
+
+function weights = get_weights(layer)
+    % weights is rows x cols x chans x filters
+
+    weights = layer.weights;
+
+    orig1 = size(weights,2);
+    orig2 = size(weights,3);
+
+    weights = reshape(weights, [size(weights,2) size(weights,3)]);
+    sz = layer.filterSize;
+    chans = layer.filterChannels;
+    weights = reshape(weights, [sz sz chans size(weights,2)]);
+    weights = permute(weights, [2 1 3 4]);
+    
+    % reshape back into normal form
+    weights = reshape(weights, [orig1 orig2]);
+
 end
 

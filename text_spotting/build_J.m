@@ -39,7 +39,7 @@ nn = cudaconvnet_to_mconvnet(model{1});
 input_size = 8 * 8 * 64;
 
 inputs = zeros(input_size,size(random_samples,3));
-for i=1:1 %size(random_samples, 3)
+for i=1:size(random_samples, 3)
     ims = [];
     ims = cat(4, ims, random_samples(:,:,i));
     ims = single(ims);

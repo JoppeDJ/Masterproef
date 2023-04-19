@@ -8,7 +8,8 @@ d = length(bf);
 
 fit_param = 0.001;
 
-X = zeros(r*N, r*d);
+X = zeros(r*N, r*(d+1));
+Y = zeros(r*N, r*(d+1));
 c = zeros(r*(d+1),1);
 
 V = rand(m,r);
@@ -23,12 +24,15 @@ for i=1:50
     %((H'*H) .* (V'*V) + fit_param^2 * (Z'*Z));
     
     W = [tens2mat(J, 1, [2, 3]) , fit_param * F] / [kr(H,V)', fit_param * Z'];
-
+    %W = [tens2mat(J, 1, [2, 3]) , fit_param * F] * pinv([kr(H,V)', fit_param * Z']);
+    
     V = tens2mat(J, 2, [1, 3]) / kr(H,W)';
-
+    %V = tens2mat(J, 2, [1, 3]) * pinv(kr(H,W)');
+    
     H = tens2mat(J, 3, [1, 2]) / kr(V,W)';
+    %H = tens2mat(J, 3, [1, 2]) * pinv(kr(V,W)');
 
-    Z = (W \ F)';
+    Z = (pinv(W) * F)';
 
     for l=1:r
         Xl = zeros(N, d+1);

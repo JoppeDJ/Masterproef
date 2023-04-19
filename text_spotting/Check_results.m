@@ -1,3 +1,69 @@
+% Check results of computed compression
+
+%clear all
+addpath(genpath('./'));
+
+dset = {};
+model = {};
+classchans = {};
+%% 
+
+We = Wres;
+Vte = Vtres;
+Zte = Ztres;
+cD1e = cD1res;
+cD2e = cD2res;
+"done"
+%% Load test set and first part of network
+dset{end+1} = 'data/icdar2003-chars-test.mat';
+model{end+1} = 'models/cov_first_part.mat';
+
+%% Run compressed network
+
+for i=1:numel(dset)
+    fprintf('Testing %s ...\n', model{i});
+    % load model
+    nn = cudaconvnet_to_mconvnet(model{i});
+    % load data
+    s = load(dset{i});
+    ims = [];
+    labels = [];
+    for j=1:numel(s.gt.labels)
+        ims = cat(4, ims, s.gt.images{j}{:});
+        labels = cat(2, labels, (j)*ones(1,numel(s.gt.images{j})));
+    end
+    ims = single(ims);
+    labels = single(labels);
+    % preprocess
+    data = reshape(ims, [], size(ims,4));
+    mu = mean(data, 1);
+    data = data - repmat(mu, size(data,1), 1);
+    v = std(data, 0, 1);
+    data = data ./ (0.0000001 + repmat(v, size(data,1), 1));
+    ims = reshape(data, size(ims));
+    clear data;
+    
+    nn = nn.forward(nn, struct('data', single(ims)));
+
+    new_data = nn.Xout(:,:,:,:);
+    
+    size(new_data)
+    
+    outputs = zeros(36, size(new_data, 4));
+    for j=1:size(new_data, 4)
+        d = single(tens2vec(new_data(:,:,:,j), [1,2,3]));
+        outputs(:,j) = flexible4(d, We, Vte, Zte, cD1e, cD2e, r1, r2);
+    end
+
+    %% go
+    [~,pred] = max(outputs, [], 1);
+
+    err = sum(labels == pred) / numel(pred);
+    fprintf('\taccuracy: %.2f percent\n', err*100);
+end
+
+%% Functions
+
 function [f] = flexible5(input, W, Vt, Zt, cD1, cD2, r1, r2)
     P1 = zeros(r1,1);
     x = Zt * input;
@@ -56,4 +122,3 @@ function [f] = flexible4(input, W, Vt, Zt, cD1, cD2, r1, r2)
 
     f = W * P2;
 end
-

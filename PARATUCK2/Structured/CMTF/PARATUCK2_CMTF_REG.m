@@ -18,12 +18,13 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
     D2 = randn(K, r2);
     Vt = randn(r2, r1);
     D1 = randn(K, r1);
+ 
 
     Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
  
     D1 = updateD1(Jac, W, Vt, Zt, D2, K, r1);
      
-    Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);        
+    Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2); 
  
     D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
  
@@ -41,17 +42,25 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
         D1 = updateD1(Jac, W, Vt, Zt, D2, K, r1);
         
         % Projectie strategie
+        tic
+
         [cD1, D1] = update_cD1(D1, Zt, samples, bf1d, K, r1, d1, lambda1);
+        
+        toc
 
         Vt = updateVt(Jac, W, D1, D2, Zt, I, J, K, r1, r2);        
 
         D2 = updateD2(Jac, W, Vt, Zt, D1, K, r2);
         
         Ht = updateH(F,W);
+        
+        tic
 
         % Projectie strategie
         [cD2, D2, Ht] = update_cD2(Ht, D2, Vt, Zt, samples, cD1, bf1, bf2, bf2d, K, r2, d2, lambda2, lambda);
         
+        toc
+
         W = updateW(Jac, F, Ht, D2, Vt, D1, Zt, I, J, K, r2, lambda);
         
 
@@ -84,12 +93,12 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
             break
         end
         
-         if(mod(i,10) == 0 && lambda < 1)
-             if(lambda * 3 < 1)
-                lambda = lambda * 3;
-             else
-                lambda = 1;
-             end
+         if(mod(i,5) == 0 && lambda < 1)
+             %if(lambda * 3 < 1)
+             lambda = lambda * 3;
+             %else
+             %   lambda = 1;
+             %end
          end
         lastError = error;
     end

@@ -1,0 +1,12 @@
+0.001 om de 5 iteraties, capped wanneer > 1
+
+36 - 36:
+
+Jerror: 0.2826
+Ferror: 0.0327
+
+Result: 88.15%
+
+Acc drop: 91.52 - 88.15 = 3.37%
+
+Compr. ratio = ~7% (veel beter ten opzichte van ~20% van CPD!!!!)

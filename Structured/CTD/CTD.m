@@ -9,6 +9,8 @@ d = length(bf);
 X = zeros(r*N, r*d);
 c = zeros(r*d,1);
 
+%[W,V,H] = relaxed_CTD(J,r);
+
 V = rand(m,r);
 H = rand(N,r);
 
@@ -16,10 +18,13 @@ lastErr = 0;
 
 for i=1:50
     W = tens2mat(J, 1, [2, 3]) / kr(H,V)';
+    %W = tens2mat(J, 1, [2, 3]) * pinv(kr(H,V)');
 
     V = tens2mat(J, 2, [1, 3]) / kr(H,W)';
+    %V = tens2mat(J, 2, [1, 3]) * pinv(kr(H,W)');
 
     H = tens2mat(J, 3, [1, 2]) / kr(V,W)';
+    %H = tens2mat(J, 3, [1, 2]) * pinv(kr(V,W)');
 
     for l=1:r
         Xl = zeros(N, d);        
@@ -33,8 +38,9 @@ for i=1:50
         end           
         X(((l-1)*N) + 1:l * N, ((l-1)*d) + 1:l * d) = Xl;
     end
-
-    c = (reshape(H, numel(H), 1)'/ X')';
+    
+    c = X \ reshape(H, numel(H), 1);
+    %c = pinv(X) * reshape(H, numel(H), 1);
     
     for l=1:r
         H(:,l) = X(((l-1)*N) + 1:l * N, ((l-1)*d) + 1:l * d) * c((l-1) * d + 1: l * d);
@@ -50,5 +56,23 @@ for i=1:50
 end
 
 err
+end
+
+
+function [W, V, H] = relaxed_CTD(J, r)
+    [~, m, N] = size(J);
+    V = rand(m,r);
+    H = rand(N,r);
+
+    for i=1:5
+        W = tens2mat(J, 1, [2, 3]) * pinv(kr(H,V)');
+    
+        V = tens2mat(J, 2, [1, 3]) * pinv(kr(H,W)');
+    
+        H = tens2mat(J, 3, [1, 2]) * pinv(kr(V,W)');
+
+        U = {W, V, H};
+        err = frob(cpdres(J, U)) / frob(J)
+    end
 end
 

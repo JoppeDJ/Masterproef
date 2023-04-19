@@ -64,7 +64,7 @@ size(inputs)
 %% Compute Jacobian tensor and zeroth-order information matrix
 
 tic
-[F, Jac] = compute_Jac_and_F(inputs);
+[F, ~] = compute_Jac_and_F(inputs);
 toc
 
 %% Functions

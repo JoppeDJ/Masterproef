@@ -12,6 +12,8 @@ tic
 [We, D2e, Vte, D1e, Zte, Ht, cD1e, cD2e] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf1d, bf2, bf2d, r1, r2, inputs);
 toc
 
+save("PT2_50_36", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
+
 %% Functions
 
 function [f] = theta1(x)

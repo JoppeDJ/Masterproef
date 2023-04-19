@@ -203,7 +203,7 @@ function [D2] = updateD2(X, W, Vt, Zt, D1, K, I, r1, r2)
 
     d2 = Z \ Jtest; 
 
-    D2 = reshape(d2, r2, K)'; 
+    D2 = reshape(d2, K, r2); 
 end
 
 function [Vt] = updateVt(X, W, D1, D2, Zt, I, J, K, r1, r2)
@@ -318,7 +318,7 @@ function [D1] = updateD1(X, W, Vt, Zt, D2, K, I, r1)
 
     d1 = Z \ Jtest; 
 
-    D1 = reshape(d1, r1, K)'; 
+    D1 = reshape(d1, K, r1); 
 end
 
 function [Zt] = updateZt(X, W, D1, Vt, D2, I, J, K, r1)

@@ -5,8 +5,8 @@ bf1d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d};
 bf2 = {@theta1, @theta2, @theta3, @theta4};%, @theta5};%, @theta6, @theta7, @theta8, @theta9, @theta10};
 bf2d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d};%, @theta6, @theta7, @theta8, @theta9, @theta10};
 
-r1 = 40;
-r2 = 40;
+r1 = 100;
+r2 = 100;
 
 tic
 [We, D2e, Vte, D1e, Zte, Ht, cD1e, cD2e] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf1d, bf2, bf2d, r1, r2, inputs);

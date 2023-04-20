@@ -19,7 +19,7 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
     Vt = randn(r2, r1);
     D1 = randn(K, r1);
  
-    %%tic
+    tic
 
     Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
     
@@ -48,12 +48,12 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
 
     W = updateW(Jac, F, Ht, D2, Vt, D1, Zt, I, J, K, r2, lambda);
     
-    %%toc
+    toc
 
     lastError = 1e5;
     minError = 1;
 
-    for i=1:18
+    for i=1:50
        
         Zt = updateZt(Jac, W, D1, Vt, D2, I, J, K, r1);
 

@@ -8,20 +8,20 @@ model = {};
 classchans = {};
 %% 
 
-%We = Wres;
-%Vte = Vtres;
-%Zte = Ztres;
-%cD1e = cD1res;
-%cD2e = cD2res;
-%"done"
+We = Wres;
+Vte = Vtres;
+Zte = Ztres;
+cD1e = cD1res;
+cD2e = cD2res;
+"done"
 %% Load test set and first part of network
 dset{end+1} = 'data/icdar2003-chars-test.mat';
 model{end+1} = 'models/cov_first_part.mat';
 fprintf("Data and model loaded")
 %% Run compressed network
 
-r1 = 50;
-r2 = 36;
+r1 = 40;
+r2 = 40;
 for i=1:numel(dset)
     fprintf('Testing %s ...\n', model{i});
     % load model

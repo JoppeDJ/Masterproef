@@ -55,7 +55,7 @@ for i=1:numel(dset)
     outputs = zeros(36, size(new_data, 4));
     for j=1:size(new_data, 4)
         d = single(tens2vec(new_data(:,:,:,j), [1,2,3]));
-        outputs(:,j) = flexible6(d, We, Vte, Zte, cD1e, cD2e, r1, r2);
+        outputs(:,j) = flexible4(d, We, Vte, Zte, cD1e, cD2e, r1, r2);
     end
 
     %% go

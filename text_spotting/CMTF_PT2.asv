@@ -5,8 +5,8 @@ bf1d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d, @theta6d};
 bf2 = {@theta1, @theta2, @theta3, @theta4};%, @theta5, @theta6};%, @theta7, @theta8, @theta9, @theta10};
 bf2d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d, @theta6d};%, @theta7, @theta8, @theta9, @theta10};
 
-r1 = 120;
-r2 = 120;
+r1 = 100;
+r2 = 100;
 
 tic
 [We, D2e, Vte, D1e, Zte, Ht, cD1e, cD2e] = PARATUCK2_CMTF_REG(Jac, F, bf1, bf1d, bf2, bf2d, r1, r2, inputs);
@@ -14,7 +14,7 @@ toc
 %% Save parameters
 
 %save("Parameters_results/CMTF_PT2_SEED/DGDH/CMTF_PT2_80_80_6_6", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
-save("Parameters_results/CMTF_PT2_SEED/CMTF_PT2_20_20", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
+save("Parameters_results/CMTF_PT2_SEED/CMTF_PT2_60_60", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
 
 %% Functions
 

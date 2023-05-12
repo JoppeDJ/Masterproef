@@ -3,7 +3,7 @@ function [Wres, D2res, Vtres, D1res, Ztres, Htres, cD1res, cD2res] = PARATUCK2_C
 %taking into account the neural network structure.
 
     % Sets the seed for reproducibility of results
-    rng(700);
+    rng(123456789);
 
     [I, J, K] = size(Jac);
     d1 = length(bf1d);

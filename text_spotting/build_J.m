@@ -19,7 +19,7 @@ classchans{end+1} = 2:37;  % ignore background class
 s = load(dset{1});
 images = s.gt.images;
 
-nb_per_class = 5;
+nb_per_class = 3;
 nb_of_classes = size(images,2);
 random_samples = zeros(24,24,nb_per_class * nb_of_classes);
 for i=1:nb_of_classes

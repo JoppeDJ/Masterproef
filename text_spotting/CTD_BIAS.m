@@ -5,8 +5,8 @@ bf1d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d};
 bf2 = {@theta1, @theta2, @theta3, @theta4};%, @theta5};%, @theta6, @theta7, @theta8, @theta9, @theta10};
 bf2d = {@theta1d, @theta2d, @theta3d, @theta4d};%, @theta5d};%, @theta6, @theta7, @theta8, @theta9, @theta10};
 
-r1 = 100;
-r2 = 80;
+r1 = 120;
+r2 = 120;
 
 tic
 [We, D2e, Vte, D1e, Zte, cD1e, cD2e] = PARATUCK2_CTD(Jac, bf1, bf1d, bf2d, r1, r2, inputs);
@@ -14,7 +14,7 @@ toc
 
 %% Bias correction
 
-nb_per_class = 5;
+nb_per_class = 3;
 nb_of_classes = 36;
 
 nb_outputs = size(We,1);
@@ -44,7 +44,7 @@ end
 cD2e = cD2e_2;
 %% Save parameters
 
-save("Parameters_results/CTD_BIAS_SEED/CTD_BIAS_100_80", "We", "D2e", "Vte", "D1e", "Zte", "cD1e", "cD2e")
+save("Parameters_results/CTD_BIAS_SEED/CTD_BIAS_120_120", "We", "D2e", "Vte", "D1e", "Zte", "cD1e", "cD2e")
 %% Error on F
 
 Fapprox = zeros(size(F,1), size(F,2));

@@ -1,0 +1,223 @@
+0.001 om de 5 iteraties, capped wanneer > 1
+
+20 - 20:
+
+Jerror: 0.5010
+Ferror: 0.0664
+
+Result: 78.11%
+
+Acc drop: 91.52 - 78.11 = 13.41%
+
+Compr ratio: 4%
+
+36 - 36:
+
+Jerror: 0.2826
+Ferror: 0.0327
+
+Result: 88.15%
+
+Acc drop: 91.52 - 88.15 = 3.37%
+
+Compr. ratio = ~7% (veel beter ten opzichte van ~20% van CPD!!!!)
+
+40 - 40:
+( aan te passen naar 25 iteraties )
+Jerror: 0.3227
+Ferror: 0.0233
+
+Result: 88.71%
+
+Acc drop: 91.52 - 88.71 = 2.81%
+
+Compr. ratio = ~8% (veel beter ten opzichte van ~20% van CPD!!!!)
+
+60 - 60:
+
+Jerror: 0.2274
+Ferror: 0.0158
+
+Result: 90.28%
+
+Acc drop: 91.52 - 90.25 = 1.24% (BETER DAN FINETUNED CPD!!!!!)
+
+Compr. ratio: 12%
+
+
+
+80 - 80:
+
+Jerror: 0.2157
+Ferror: 0.0113
+
+Result: 90.55%
+
+Acc drop: 91.52 - 90.55 = 0.97% (BETER DAN FINETUNED CPD!!!!!)
+
+Compr. ratio: 16%
+
+
+
+
+100 - 100:
+
+Jerror: 0.2031
+Ferror: 0.0080
+
+Result: 90.46%
+
+Acc drop: 91.52 - 90.46 = 1.06% (BETER DAN FINETUNED CPD!!!!!)
+
+Compr. ratio: 20%
+
+
+120 - 120:
+
+Jerror: 0.2118
+Ferror: 0.0076
+
+Result: 90.55%
+
+Acc drop: 91.52 - 90.55 = 0.97% (BETER DAN FINETUNED CPD!!!!!)
+
+Compr. ratio: 24%
+
+
+
+
+
+
+
+
+TWEEDE LAAG CONSTANT AANTAL NEURONEN:
+
+
+r1 = 40:
+
+r2: 40
+
+Jerror = 0.2721
+Ferror = 0.0286
+
+Result = 88.59%
+
+AccDrop = 91.52 - 88.59 = 2.93%
+
+r2: 60
+
+Jerror = 0.2289
+Ferror = 0.0188
+
+Result = 89.69%
+
+AccDrop = 91.52 - 89.69 = 1.83%
+
+
+
+r2: 80
+
+Jerror = 0.2125
+Ferror = 0.0161
+
+Result = 89.92%
+
+AccDrop = 91.52 - 89.92 = 1.60% 
+
+
+
+r2: 100
+
+Jerror = 0.2057
+Ferror = 0.0147
+
+Result = 89.92%
+
+AccDrop = 91.52 - 89.92 = 1.60%
+
+
+
+
+
+
+
+r1 = 60:
+
+r2: 40
+
+Jerror = 0.2633
+Ferror = 0.0195
+
+Result = 89.59
+
+AccDrop = 91.52 - 89.59 = 1.93%
+
+r2: 60
+
+Jerror = 0.2364
+Ferror = 0.0158
+
+Resulst = 90.02%
+
+AccDrop = 91.52 - 90.02 = 1.5%
+
+r2: 80
+
+Jerror = 0.2140
+Ferror = 0.0115
+
+Result = 90.44
+
+AccDrop = 91.52 - 90.44 = 1.08%
+
+r2: 100
+
+Jerror = 0.2032
+Ferror = 0.0108
+
+Result = 90.48
+
+AccDrop = 91.52 - 90.48 = 1.04%
+
+
+
+
+
+r1 = 80:
+
+r2: 40
+
+Jerror = 0.2578
+Ferror = 0.0149
+
+Result: 89.82%
+
+Accuracy drop = 91.52 - 89.82 = 1.7%
+
+r2: 60
+
+Jerror = 0.2322
+Ferror = 0.0124
+
+Result: 90.50%
+
+Accuracy drop = 91.52 - 90.50 = 1.02%
+
+r2: 80
+
+Jerror = 0.2137
+Ferror = 0.0106
+
+Result: 90.50%
+
+Accuracy drop = 91.52 - 90.38 = 1.02%
+
+r2: 100
+
+Jerror: 0.2035
+
+Ferror: 0.0097
+
+Result = 90.57%
+
+AccDrop = 91.52 - 90.57 = 0.95%

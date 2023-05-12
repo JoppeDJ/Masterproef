@@ -1,0 +1,16 @@
+Vergelijking met CPD: ?
+
+General tests:
+
+- 40: 100 1423 58162
+- 60: 300 2341 65821
+- 80: 1423 700 12422
+
+Invloed van dg en dh:
+
+Zelfde seeds als 80 => Hergebruik van resultaten mogelijk voor dh = dg = 4
+
+1423 700 12422
+
+
+80-80 => 1.14% met seed 100

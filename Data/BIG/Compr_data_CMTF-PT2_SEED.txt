@@ -1,0 +1,212 @@
+TWEEDE LAAG CONSTANT AANTAL NEURONEN:
+
+
+r1 = 40:
+
+r2: 40
+
+Jerror = 0.2713
+Ferror = 0.0283
+
+Result = 88.26%
+
+AccDrop = 91.52 - 88.26 = 3.26%
+
+r2: 60
+
+Jerror = 0.2298
+Ferror = 0.0196
+
+Result = 89.71%
+
+AccDrop = 91.52 - 89.71 = 1.81% 
+
+
+
+r2: 80
+
+Jerror = 0.2172
+Ferror = 0.0167
+
+Result = 89.80%
+
+AccDrop = 91.52 - 89.80 = 1.72%
+
+
+r2: 100
+
+Jerror = 0.2059
+Ferror = 0.0147
+
+Result = 89.96%
+
+AccDrop = 91.52 - 89.96 = 1.56%
+
+
+
+
+
+
+
+r1 = 60:
+
+r2: 40
+
+Jerror = 0.2635
+Ferror = 0.0202
+
+Result = 89.38%
+
+AccDrop = 91.52 - 89.38  = 2.14%
+
+r2: 60
+
+Jerror = 0.2341
+Ferror = 0.0149
+
+Resulst = 90.17%
+
+AccDrop = 91.52 - 90.17 = 1.35% 
+
+r2: 80
+
+Jerror = 0.2149
+Ferror = 0.0124
+
+Result = 90.40%
+
+AccDrop = 91.52 - 90.40 = 1.12%
+
+r2: 100
+
+Jerror = 0.2004
+Ferror = 0.0101
+
+Result = 90.25%
+
+AccDrop = 91.52 - 90.25  = 1.27% 
+
+
+
+
+
+r1 = 80:
+
+r2: 40
+
+Jerror = 0.2600
+Ferror = 0.0160
+
+Result = 89.71%
+
+Accuracy drop = 91.52 - 89.71 = 1.81%
+
+r2: 60
+
+Jerror = 0.2317
+Ferror = 0.0124
+
+Result: 90.55
+
+Accuracy drop = 91.52 - 90.55  = 0.97%
+
+r2: 80
+
+Jerror = 0.2121
+Ferror = 0.0099
+
+Result: 90.34
+
+Accuracy drop = 91.52 - 90.34 = 1.18%
+
+r2: 100
+
+Jerror: 0.2052
+
+Ferror: 0.0085
+
+Result = 90.61%
+
+AccDrop = 91.52 - 90.61 = 0.91% 
+
+
+
+
+
+
+
+Effects of dg and dh:
+
+Seeds voor results, 1423 700 12422
+
+(80,80)
+
+dg = dh = 2:
+
+Jerror = 0.2202		0.2274	
+
+Ferror = 0.0107		0.0115	
+
+Result: 90.25		90.30	
+
+AccDrop: 
+91.52 - 90.25 = 1.27%
+91.52 - 90.30 = 1.22%
+
+
+
+dg = dh = 3:
+
+Jerror = 0.2207		0.2168
+
+Ferror = 0.0109		0.0107
+
+Result: 90.69%		90.52
+
+AccDrop: 
+91.52 - 90.69 = 0.83%
+91.52 - 90.52 = 1.00% 
+
+
+
+dg = dh = 4:
+
+Jerror = zie andere run		0.2159
+
+Ferror = zie andere run		0.0101
+
+Result: zie andere run		90.44
+
+AccDrop: 
+zie andere run
+91.52 - 90.44 = 1.08% 
+
+
+
+dg = dh = 5:
+
+
+Jerror = 0.2126		0.2157
+
+Ferror = 0.0098		0.0104
+
+Result: 90.50%		90.61%
+
+AccDrop: 
+91.52 - 9.50 = 1.02%
+91.52 - 9.61 = 0.91%
+
+
+
+dg = dh = 6:
+
+
+Jerror = 0.2116		0.2081
+
+Ferror = 0.0104		0.0098
+
+Result: 90.42%		90.53%
+
+AccDrop: 
+91.52 - 90.42 = 1.10%
+91.52 - 90.53 = 0.99%

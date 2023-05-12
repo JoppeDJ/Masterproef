@@ -19,7 +19,7 @@ classchans{end+1} = 2:37;  % ignore background class
 s = load(dset{1});
 images = s.gt.images;
 
-nb_per_class = 10;
+nb_per_class = 5;
 nb_of_classes = size(images,2);
 random_samples = zeros(24,24,nb_per_class * nb_of_classes);
 for i=1:nb_of_classes
@@ -64,7 +64,7 @@ size(inputs)
 %% Compute Jacobian tensor and zeroth-order information matrix
 
 tic
-[F, ~] = compute_Jac_and_F(inputs);
+[F, Jac] = compute_Jac_and_F(inputs);
 toc
 
 %% Functions

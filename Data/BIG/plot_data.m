@@ -16,6 +16,8 @@ Comp_ratio = [4 8 12 16 20 24];
 
 %% Plot figures
 
+%% Subplot of accuracy drop, tensor NMSE and matrix NMSE
+
 subplot(1,3,2);
 
 semilogy(r_vals, Jerror, '-x')
@@ -48,6 +50,34 @@ legend("2 layers, no FT", "1 layer, no FT", "1 layer, FT")
 
 hold off
 
+%% Only accuracy drop
 
 figure
-semilogy(r_vals, Comp_ratio, '--*')
+
+semilogy(r_vals, Acc_drops, '-o')
+
+ylabel("Accuracy drop (%)", 'FontSize', 16)
+xlabel("Flexibele neuronen per laag (FN)", 'FontSize', 16)
+
+ax = gca;
+ax.FontSize = 16;
+
+yticks([0.97 1.45 5 10 100])
+ylim([0.8 13.41])
+hold on
+semilogy(r_vals, acc_drop_no, '-o')
+semilogy(r_vals, acc_drop_ft, '--o')
+
+legend("2 lagen, geen FT", "1 laag, geen FT", "1 laag, FT")
+
+hold off
+
+%% Compression ratio for 2 layers vs 1 layer
+
+figure
+
+semilogy(r_vals, 100 - Comp_ratio, '--*')
+ax = gca;
+ax.FontSize = 16;
+ylabel("Comprimerings ratio (%)")
+xlabel("Flexibele neuronen per laag", 'FontSize', 16)

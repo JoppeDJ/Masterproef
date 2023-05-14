@@ -6,7 +6,7 @@ General tests:
 - 60: 300 	234185 	65821
 - 80: 1423 	700 	12422
      
-      DONE	
+      DONE	DONE
 
 Invloed van dg en dh:
 

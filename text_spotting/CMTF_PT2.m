@@ -14,7 +14,7 @@ toc
 %% Save parameters
 
 %save("Parameters_results/CMTF_PT2_SEED/DGDH/12422/CMTF_PT2_80_80_2_2", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
-save("Parameters_results/CMTF_PT2_SEED/Second_row_of_seeds/CMTF_PT2_100_80", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
+save("Parameters_results/CMTF_PT2_SEED/Third_row_of_seeds/CMTF_PT2_100_80", "We", "D2e", "Vte", "D1e", "Zte", "Ht", "cD1e", "cD2e")
 
 %% Functions
 

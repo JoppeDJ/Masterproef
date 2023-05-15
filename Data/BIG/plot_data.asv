@@ -59,7 +59,7 @@ figure
 semilogy(r_vals, Acc_drops_CMTF_PT2, '-o')
 
 ylabel("Accuracy drop (%)", 'FontSize', 12)
-xlabel("Flexibele neuronen per laag", 'FontSize', 12)
+xlabel("Flexibele neuronen per laag (FN)", 'FontSize', 12)
 
 %ax = gca;
 %ax.FontSize = 14;
@@ -98,7 +98,7 @@ figure
 semilogy(r_vals, Acc_drops_CMTF_PT2, '-o')
 
 ylabel("Accuracy drop (%)", 'FontSize', 12)
-xlabel("Flexibele neuronen per laag", 'FontSize', 12)
+xlabel("Flexibele neuronen per laag (FN)", 'FontSize', 12)
 
 %ax = gca;
 %ax.FontSize = 14;
@@ -914,38 +914,4 @@ compr_rates_PT2 = [3.932 7.903 11.911 15.957 20.04 24.1620];
 
 figure
 
-semilogy(x_values, compr_rates_CPD, '--*')
 
-hold on
-
-semilogy(x_values, compr_rates_PT2, '--*')
-
-ylabel("Compressie ratio (%)")
-xlabel("Flexibele neuronen per laag", 'FontSize', 12)
-
-legend("1 laag", "2 lagen", 'Location', 'northwest')
-
-hold off
-
-
-% For different neurons in both layers
-x_values = [40 60 80 100];
-compr_rates_40 = [7.903 11.815 15.728 19.640];
-compr_rates_60 = [7.979 11.9107 15.842 19.774];
-compr_rates_80 = [8.056 12.006 15.957 19.91];
-
-figure
-
-semilogy(x_values, compr_rates_40, '--*')
-
-hold on
-
-semilogy(x_values, compr_rates_60, '--*')
-semilogy(x_values, compr_rates_80, '--*')
-
-ylabel("Compressie ratio (%)")
-xlabel("Flexibele neuronen per laag", 'FontSize', 12)
-
-legend("r_1 = 40", "r_1 = 60", "r_1 = 80", 'Location', 'northwest')
-
-hold off
